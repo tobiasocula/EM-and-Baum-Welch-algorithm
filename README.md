@@ -23,8 +23,12 @@ So here we are considering the sum over all possible future states $j$ (the sum 
 
 Next, we compute $\gamma\in\mathbb{R}^{T\times N}$ where $\gamma_t(i)=\mathbb{P}(S_t=i\ |\ O_1,...,O_T)$ (the probability that we were in state $i$ at time $t$ given the observations), by  
 $$\gamma_t(i)=\frac{\alpha_t(i)\beta_t(i)}{\sum_j\alpha_t(j)\beta_t(j)}$$  
+The way we get this formula, is by transforming the formula for gamma: $\gamma_t(i)=\mathbb{P}(S_t=i\ |\ O_1,...,O_T)=\mathbb{P}(S_t=i,O_1,...,O_T)/\mathbb{P}(O_1,...,O_T)$ and splitting $O_1,...,O_T$ into $O_1,...,O_t$ and $O_{t+1},...,O_T$ for each $t$, and because $\mathbb{P}(S_t=i,O_1,...,O_t)=\alpha_t(i)$ and $\mathbb{P}(S_t=i,O_{t+1},...,O_T)=\beta_t(i)$ we get the formula for the numerator. The formula for the denominator follows from the fact that $\mathbb{P}(O_1,...,O_T)$ is just the sum over all states $j$ of $\alpha_t(j)\beta_t(j)$ (we are considering the probability of having seen the given observations, no matter the end state).
+
 Then we compute $\xi\in\mathbb{R}^{T\times N\times N}$ where $\xi_t(i,j)=\mathbb{P}(S_t=i,S_{t+1}=j\ |\ O_1,...,O_T)$ (the probability that we were in state $i$ at time $t$ and that the next state $S_{t+1}$ will be $j$, given the observations), by  
-$$\xi_t(i,j)=\frac{\alpha_t(i)a_{i,j}b_j(O_{t+1})\beta_{t+1}(j)}{\sum_{k,l}\alpha_t(k)a_{k,l}b_l(O_{t+1})\beta_{t+1}(l)}$$
+$$\xi_t(i,j)=\frac{\alpha_t(i)a_{i,j}b_j(O_{t+1})\beta_{t+1}(j)}{\sum_{k,l}\alpha_t(k)a_{k,l}b_l(O_{t+1})\beta_{t+1}(l)}$$  
+We obtain this equation by further developing the formula for xi: $\xi_t(i,j)=\mathbb{P}(S_t=i,S_{t+1}=j\ |\ O_1,...,O_T)=\mathbb{P}(S_t=i,S_{t+1}=j,O_1,...,O_T)/\mathbb{P}(O_1,...,O_T)$  
+In the numerator, $\mathbb{P}(S_t=i,S_{t+1}=j,O_1,...,O_T)=\alpha_t(i)a_{i,j}b_j(O_{t+1})\beta_{t+1}(j)$, we count the probability of having gotten to state $i$ at time $t$ whilst having transitioned into the next state $j$, whilst also having observed state $j$ at time $t+1$, multiplied by the probability of observing $O_{t+1},...,O_T$ in the future (being $\beta_{t+1}(j)$). In the denominator, we simply compute the same but summing over all possible states $k,l$, accounting for the probability of having seen the observations no matter the (next) state of time $t$.
 
 In the third step, the maximization step, we update the parameters $\theta=(A,B,\pi)$ using the estimated probabilities from the previous step.  
 We compute the values for $A$ by:  
