@@ -112,6 +112,39 @@ Here, the normalized vector (sum should equal 1) of $\S_tA$ is essentially the p
 
 We can then simply count the fraction of correctly predicted states and observations by comparing the predictions to the actual "true" values.
 
+### The weather HMM, but with continuous observation distribution
+
+In the file "weather_hmm_continuous.ipynb" I have reconstructed the weather HMM from the previous implementation, but with a more interesting approach. I have extended the set of possible states from {rain, no rain} to {rain and warm, rain and cold, dry and warm, dry and cold}, but most importantly made the observation space a continuous length-2 vector (temperature, rain_intensity).
+
+A few interesting things change in the implementation.
+
+Now, instead of $B$ being a static $N\times M$ matrix where $B_{i,k}=\mathbb{P}(\text{emitted observation }k\text{ in state }i)$ (where $N$ is the amount of states and $M$ the amount of observable states), now B is a $T\times M$ matrix where $B_{t,k}=b_t(k)=\mathbb{P}(O_t=o_k\ |\ S_t=k)$. Here, $O_t$ is a stochastic variable following a multivariable Gaussian distribution, with mean $\mu_i$ being the mean observation vector of state $i$ (two components here) and covariance matrix $\Sigma_i$ encoding the interdependence and relative variance between the labels "temperature" and "rain intensity" of state $i$. So we can calculate $b_t(k)$ by computing the PDF function of the multivariate Gaussian distribution with parameters $\mu_i$ and $\Sigma_i$. However, since we are working with logarithms, we will be computing the log of this value.
+
+#### Evaluation
+
+For the evaluation step, a few things change as well.  
+Instead of computing the permutation indices (by using the Hungarian method again) by using $B$, now we cannot do this anymore, because $B$ isn't a static $M\times N$ matrix anymore. We instead obtain the permutation indeces by matching using the true and estimated values of $\mu$ and $\Sigma$.
+
+For this, we use a measure of statistical difference called the KL-divergence.
+
+https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence
+
+We will compute the "difference" between $\Sigma_{\text{estimated}}$ and $\Sigma_{\text{real}}$ using this method, but because this function is not symmetric, we will compute
+
+$D_{\text{sym}}(P,Q)=D_{KL}(P\ |\ Q)+D_{KL}(Q\ |\ P)$
+
+with $P=\Sigma_{\text{estimated}}$ and $Q=\Sigma_{\text{real}}$, as the measure we will use for permuting the matrices.  
+For the multivariate normal distribution, there exists a close form of this formula:
+
+$D_{KL}(\mathcal{N}(\mu_1,\Sigma_1)\ |\ \mathcal{N}(\mu_2,\Sigma_2))=\frac{1}{2}(\text{Tr}(\Sigma_{2}^{-1}\Sigma_{1})+(\mu_2-\mu_1)^T\Sigma_{2}^{-1}(\mu_2-\mu_1)-d+\text{log}(\text{det}\Sigma_2/\text{det}\Sigma_1))$
+
+with $d$ being the dimensionality of the data (2 in this case).  
+We can then construct a distance matrix $C\in\mathbb{R}^{M\times M}$ where
+
+$C_{i,j}=D_{\text{sym}}(\Sigma_{i}^{\text{estimated}}\ |\ \Sigma_{i}^{\text{real}})$
+
+and then use the Hungarian algorithm on this cost matrix.
+
 ### The Baum-Welch algorithm for constructing an investment portfolio
 
-Then I made an implementation in "baum_welch_on_financials" where I'm using Baum Welch to make a simulated investment portfolio out of synthetic data. What's interesting is that the formula for $B$ changes quite a lot, and more computation is needed for some values. I explore and explain what changes in the notebook itself.
+I also made an implementation in "baum_welch_on_financials" where I'm using Baum Welch to make a simulated investment portfolio out of synthetic data.
