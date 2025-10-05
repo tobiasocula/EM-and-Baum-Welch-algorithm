@@ -78,7 +78,11 @@ For evaluating this, we will compute two arrays, namely the predicted state- and
 We will iterate over all future timestamps, from $t=T+1$ to $t=T_{\text{end}}$, and compute the predicted states and observations from the previous values (dynamic programming).  
 We initialize: $S_{T+1}=\underset{j}{\mathrm{argmax}}\ \gamma_{T}(j)$, so we take the most probable state $j$ occuring at time $T$. We also initialize the observation sequence as: $O_{T+1}=\underset{j}{\mathrm{argmax}}\ b_{S_{T+1}}(j)$. Here we take the most probable observation occuring under the current estimation of $b$, given the predicted state of time $T+1$.    
 We can then compute the next elements in respectively the state and observation sequence dynamically as  
-$S_t=\underset{j}{\mathrm{argmax}}\ (S_{t}A)_j$  
+
+$S_t=\underset{j}{\mathrm{argmax}}\ (S_{t}A)_j$
+
+$O_t=\underset{j}{\mathrm{argmax}}\ b_{S_t}(j)$
+
 Here, the normalized vector (sum should equal 1) of $\S_{t}A$ is essentially the probability distribution of the next state (we multiply by the transition probability matrix $A$) and we simply take the most probable state $j$, for the value $S_t$, and $b_{S_t}(j)$ is the probability of emitting observation $j$ given that we were in state $S$ at time $t$. We also take the most probable observation here, for obtaining $O_t.
 
 We can then simply count the fraction of correctly predicted states and observations by comparing the predictions to the actual "true" values.
