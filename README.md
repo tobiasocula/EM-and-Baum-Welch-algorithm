@@ -54,7 +54,7 @@ We also store
 $\psi_t(i) = \underset{j}{\mathrm{argmax}}\ \delta_{t-1}(j)a_{i,j}$  
 which is the state $j$, which given that the maximum probability path ended in state $i$, is the most likely to have preceded state $i$ at time $t-1$.  
 Next, we initialize the predicted state sequence by setting  
-$\text{states}_T=\underset{j}{\mathrm{argmax}}\ \delta_T(j)$  
+$\text{states}_{T}=\underset{j}{\mathrm{argmax}}\ \delta_T(j)$  
 and then iterate backwards:  
 $\text{states}_t=\psi_{t+1}(\text{states}_{t+1})$  
 
