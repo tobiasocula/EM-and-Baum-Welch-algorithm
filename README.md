@@ -69,7 +69,21 @@ which is the state $j$, which given that the maximum probability path ended in s
 Next, we initialize the predicted state sequence by setting  
 $S_{T_{\text{end}}}=\underset{j}{\mathrm{argmax}}\ \delta_{T_{\text{end}}}(j)$  
 and then iterate backwards:  
-$S_t=\psi_{t+1}(S_{t+1})$  
+$S_t=\psi_{t+1}(S_{t+1})$
 
+##### Predictions when future observations are unknown
+
+We also wish to evaluate the model on future data, assuming the current timestamp is $t=T$ and we don't have knowledge of the future observations, like we did with the Viterbi algorithm.  
+For evaluating this, we will compute two arrays, namely the predicted state- and observation sequence.  
+We will iterate over all future timestamps, from $t=T+1$ to $t=T_{\text{end}}$, and compute the predicted states and observations from the previous values (dynamic programming).  
+We initialize: $\overline{S}_{T+1}=\underset{j}{\mathrm{argmax}}\ \gamma_{T}(j), so we take the most probable state $j$ occuring at time $T$. We also initialize the observation sequence as: $\overline{O}_{T+1}=\underset{j}{\mathrm{argmax}}\ b_{\overline{S}_{T+1}}(j)$. Here we take the most probable observation occuring under the current estimation of $b$, given the predicted state of time $T+1$.    
+We can then compute the next elements in respectively the state and observation sequence dynamically as  
+$\overline{S}_t=\underset{j}{\mathrm{argmax}}\ (\overline{S}_tA)_j$ (normalized)  
+$\overline{O}_t=\underset{j}{\mathrm{argmax}}\ b_{\overline{S}_t}(j)$  
+Here, $\overline{S}_tA$ is essentially the probability distribution of the next state (we multiply by the transition probability matrix $A$) and we simply take the most probable state $j$, for the value $\overline{S}_t$, and $b_{\overline{S}_t}(j)$ is the probability of emitting observation $j$ given that we were in state $\overline{S}$ at time $t$. We also take the most probable observation here, for obtaining $\overline{O}_t.
+
+We can then simply count the fraction of correctly predicted states and observations by comparing the predictions to the actual "true" values.
+
+### The Baum-Welch algorithm for constructing an investment portfolio
 
 Then I made an implementation in "baum_welch_on_financials" where I'm using Baum Welch to make a simulated investment portfolio out of synthetic data. What's interesting is that the formula for $B$ changes quite a lot, and more computation is needed for some values. I explore and explain what changes in the notebook itself.
