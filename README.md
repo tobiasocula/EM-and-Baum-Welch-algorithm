@@ -56,7 +56,7 @@ which is the state $j$, which given that the maximum probability path ended in s
 Next, we initialize the predicted state sequence by setting  
 $S_{T_{\text{end}}}=\underset{j}{\mathrm{argmax}}\ \delta_{T_{\text{end}}}(j)$  
 and then iterate backwards:  
-$\text{states}_t=\psi_{t+1}(\text{states}_{t+1})$  
+$S_t=\psi_{t+1}(S_{t+1})$  
 
 
 Then I made an implementation in "baum_welch_on_financials" where I'm using Baum Welch to make a simulated investment portfolio out of synthetic data. What's interesting is that the formula for $B$ changes quite a lot, and more computation is needed for some values. I explore and explain what changes in the notebook itself.
