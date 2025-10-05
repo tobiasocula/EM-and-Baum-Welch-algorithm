@@ -48,10 +48,14 @@ I first assume the model has access to the future observation sequence, and I wi
 For this, I store two structures $\delta,\psi\in\mathbb{R}^{T\times N}$, where $\delta_t(i)$ represents the maximum probability, over all possible state sequences, of seeing these states under the respected observation states, where the state at time $t-1$ ends in $i$, given the estimated parameters. So    
 $$\delta_t(i)=\underset{S_0,...,S_{t-1}}\max\mathbb{P}(S_0,S_1,...,S_{t-1}=i,O_1,...,O_T\ |\ \theta)$$  
 I initialize $\delta_1(i)=\pi_ib_i(O_1)$ and then run over all future timestamps $t=T+1$ until $t=T_{\text{tend}}$, where I calculate dynamically:  
-$$\delta_t(i)=\text{max}\underset{j}(\delta_{t-1}(j)a_{i,j})b_i(O_t)$$  
+$$\delta_t(i)=\underset{j}\max(\delta_{t-1}(j)a_{i,j})b_i(O_t)$$  
 So we compute the maximum probability of the previous timestamp multiplied by the transition probability, multiplied by the probability that we observed $O_t$.  
-We also store $\psi_t(i)=\text{argmax}\underset{j}(\delta_{t-1}(j)a_{i,j})$, the state $j$, which given that the maximum probability path ended in state $i$, is the most likely to have preceded state $i$ at time $t-1$.  
-Next, we initialize the predicted state sequence by setting $\text{states}_{T_\text{end}}=\text{argmax}\underset{j}\delta_{T_{\text{end}}}(j)$, and then iterate backwards:  
+We also store 
+$$\psi_t(i)=\underset{j}\argmax(\delta_{t-1}(j)a_{i,j})$$  
+which is the state $j$, which given that the maximum probability path ended in state $i$, is the most likely to have preceded state $i$ at time $t-1$.  
+Next, we initialize the predicted state sequence by setting
+$$\text{states}_{T_\text{end}}=\underset{j}argmax\delta_{T_{\text{end}}}(j)$$  
+and then iterate backwards:  
 $$\text{states}_t=\psi_{t+1}(\text{states}_{t+1})$$  
 
 
