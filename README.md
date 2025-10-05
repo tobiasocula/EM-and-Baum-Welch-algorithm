@@ -1,3 +1,6 @@
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
 ### Expected Maximization algorithm and Baum-Welch algorithm
 
 When reading about arbitrary optimalization and variations of the maximum-likelyhood method I stumbled accross the EM and Baum Welch algorithms, and I thought I'd experiment with them and see how they work.
