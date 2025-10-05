@@ -51,7 +51,7 @@ I initialize $\delta_1(i)=\pi_ib_i(O_1)$ and then run over all future timestamps
 $$\delta_t(i)=\underset{j}\max(\delta_{t-1}(j)a_{i,j})b_i(O_t)$$  
 So we compute the maximum probability of the previous timestamp multiplied by the transition probability, multiplied by the probability that we observed $O_t$.  
 We also store  
-$$\psi_t(i) = \underset{j}{\mathrm{argmax}} (\delta_{t-1}(j)a_{i,j})$$  
+$$\psi_t(i) = \underset{j}{\mathrm{argmax}}\delta_{t-1}(j)a_{i,j}$$  
 which is the state $j$, which given that the maximum probability path ended in state $i$, is the most likely to have preceded state $i$ at time $t-1$.  
 Next, we initialize the predicted state sequence by setting
 $$\text{states}_{T_\text{end}}=\underset{j}argmax\delta_{T_{\text{end}}}(j)$$  
