@@ -1,4 +1,4 @@
-### Expected Maximization algorithm and Baum-Welch algorithm
+## Expected Maximization algorithm and Baum-Welch algorithm
 
 When reading about arbitrary optimalization and variations of the maximum-likelyhood method I stumbled accross the EM and Baum Welch algorithms, and I thought I'd experiment with them and see how they work.
 
@@ -10,12 +10,19 @@ Given a hidden Markov-chain (HMM), consisting of a set of states (which are hidd
 
 The first step in the algorithm is making a guess for the values of $A$, $B$ and $\pi$ to initialize them.
 
+#### Expectation Step
+
 The second step is called the expectation-step, where we estimate the probability that the observations that we saw came from the parameters $\theta=(A,B,\pi)$ that we currently have.
 
-This step consists of the so-called forward and backward algorithm.  
+This step consists of the so-called forward and backward algorithm.
+
+##### Forward algorithm
+
 In the forward algorithm, we estimate the probability that the observed sequence of the HMM from $t=1$ to $t=t$, ended in state $i$, we denote this by $\alpha_t(i)=\mathbb{P}(O_1,...,O_t,S_t=i)$. For this, we first initialize $\alpha_1(i)=\pi_i b_i(O_1)$, (the probability that we were in state $i$ at the beginning times the probability that the first observation ($O_1$) occured during state $i$). Then, we compute  
 $\alpha_t(j)=b_j(O_t)\sum_i\alpha_{t-1}(i)a_{i,j}$  
 recursively. So we consider all ways to reach state $j$ from previous states $\alpha_{t-1}(i)a_{i,j}$ multiplied by the probability of seeing observation $O_t$ in state $j$.
+
+##### Backward algorithm
 
 In the backward algorithm, we do the opposite: we estimate the probability of observing the future from $t=t+1$ onward, given state $i$ at time $t$. We denote this by $\beta_t(i)=\mathbb{P}(O_{t+1},...,O_T\ |\ S_t=i)$. We initialize $\beta_T(i)=1$ (since there is no future at $t=T$), and then we compute recursively again:  
 $\beta_t(i)=\sum_j a_{i,j}b_j(O_{t+1})\beta_{t+1}(j)$  
@@ -30,6 +37,8 @@ $\xi_t(i,j)=\frac{\alpha_t(i)a_{i,j}b_j(O_{t+1})\beta_{t+1}(j)}{\sum_{k,l}\alpha
 We obtain this equation by further developing the formula for xi: $\xi_t(i,j)=\mathbb{P}(S_t=i,S_{t+1}=j\ |\ O_1,...,O_T)=\mathbb{P}(S_t=i,S_{t+1}=j,O_1,...,O_T)/\mathbb{P}(O_1,...,O_T)$  
 In the numerator, $\mathbb{P}(S_t=i,S_{t+1}=j,O_1,...,O_T)=\alpha_t(i)a_{i,j}b_j(O_{t+1})\beta_{t+1}(j)$, we count the probability of having gotten to state $i$ at time $t$ whilst having transitioned into the next state $j$, whilst also having observed state $j$ at time $t+1$, multiplied by the probability of observing $O_{t+1},...,O_T$ in the future (being $\beta_{t+1}(j)$). In the denominator, we simply compute the same but summing over all possible states $k,l$, accounting for the probability of having seen the observations no matter the (next) state of time $t$.
 
+#### Maximization Step
+
 In the third step, the maximization step, we update the parameters $\theta=(A,B,\pi)$ using the estimated probabilities from the previous step.  
 We compute the values for $A$ by:  
 $a_{i,j}=\frac{\sum_{t}^{T-1}\xi_t(i,j)}{\sum_{t}^{T-1}\gamma_t(i)}$  
@@ -42,7 +51,11 @@ We then repeat this procedure by going back to step 2. The algorithm will conver
 We can also compute the log-likelyhood of the system: $\text{log}\sum_i\alpha_T(i)$. This will give a measure of certainty of the estimation of the parameters. This represents the log of the fraction of observation data that gets explained by the estimated parameters. The algorithm will converge to a certain value of this log-likelyhood and we detect how much this changes during every iteration step.  
 My implementation for the weather HMM will run the algorithm multiple times and then store every log-likelyhood and parameter instance estimated, and then compare.
 
+#### Evaluating the model
+
 After every time we run the training, meaning we exit if the desired error tolerance is reached or if too many attempts have been used, I test the model on "future" data (not really future, since it's all synthetic), in two different ways.
+
+##### Viterbi algorithm
 
 I first assume the model has access to the future observation sequence, and I will test the model on its ability to generalize on estimating the underlying state sequence.  
 For this, I store two structures $\delta,\psi\in\mathbb{R}^{T\times N}$, where $\delta_t(i)$ represents the maximum probability, over all possible state sequences, of seeing these states under the respected observation states, where the state at time $t-1$ ends in $i$, given the estimated parameters. So    
@@ -60,4 +73,3 @@ $S_t=\psi_{t+1}(S_{t+1})$
 
 
 Then I made an implementation in "baum_welch_on_financials" where I'm using Baum Welch to make a simulated investment portfolio out of synthetic data. What's interesting is that the formula for $B$ changes quite a lot, and more computation is needed for some values. I explore and explain what changes in the notebook itself.
-  
