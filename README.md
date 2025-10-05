@@ -75,7 +75,7 @@ $S_t=\psi_{t+1}(S_{t+1})$
 
 We also wish to evaluate the model on future data, assuming the current timestamp is $t=T$ and we don't have knowledge of the future observations, like we did with the Viterbi algorithm.  
 For evaluating this, we will compute two arrays, namely the predicted state- and observation sequence.  
-We will iterate over all future timestamps, from $t=T+1$ to $t=T_{\text{end}}$, and compute the predicted states and observations from the previous values (dynamic programming). We denote $\bar{S}_t$ for the predicted state at time $t$ and $\bar{O}_t$ for the predicted observation at time $t$.  
+We will iterate over all future timestamps, from $t=T+1$ to $t=T_{\text{end}}$, and compute the predicted states and observations from the previous values (dynamic programming). We denote $\bar{S}_{t}$ for the predicted state at time $t$ and $\bar{O}_{t}$ for the predicted observation at time $t$.  
 We initialize: $S_{T+1}=\underset{j}{\mathrm{argmax}}\ \gamma_{T}(j)$, so we take the most probable state $j$ occuring at time $T$. We also initialize the observation sequence as: $O_{T+1}=\underset{j}{\mathrm{argmax}}\ b_{S_{T+1}}(j)$. Here we take the most probable observation occuring under the current estimation of $b$, given the predicted state of time $T+1$.    
 We can then compute the next elements in respectively the state and observation sequence dynamically as  
 $S_t=\underset{j}{\mathrm{argmax}}\ (S_{t}A)_j$
