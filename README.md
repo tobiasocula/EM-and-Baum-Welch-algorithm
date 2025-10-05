@@ -53,11 +53,20 @@ My implementation for the weather HMM will run the algorithm multiple times and 
 
 #### Evaluating the model
 
-After every time we run the training, meaning we exit if the desired error tolerance is reached or if too many attempts have been used, I test the model on "future" data (not really future, since it's all synthetic), in two different ways.
+After every time we run the training, meaning we exit if the desired error tolerance is reached or if too many attempts have been used, we first have to "align" the predicted parameters $A$, $B$ and $pi$ in the right direction.  
+The reason we have to do this is because when the model constructs the parameters, it predicts the values for $A$, $B$ and $pi$ up to a permutation only. Applying a different permutation to $A$, $B$ and $pi$ gives the same likelyhood of the data.  
+We therefor use the Hungarian method to find a best-fit assignment between the real values of the parameters and the estimated parameters, which corresponds to finding a correct permutation for the parameters.
+
+https://en.wikipedia.org/wiki/Hungarian_algorithm
+
+After having done this, I test the model on "future" data (not really future, since it's all synthetic), in two different ways.
 
 ##### Viterbi algorithm
 
-I first assume the model has access to the future observation sequence, and I will test the model on its ability to generalize on estimating the underlying state sequence.  
+I first assume the model has access to the future observation sequence, and I will test the model on its ability to generalize on estimating the underlying state sequence.
+
+https://en.wikipedia.org/wiki/Viterbi_algorithm
+
 For this, I store two structures $\delta,\psi\in\mathbb{R}^{T\times N}$, where $\delta_t(i)$ represents the maximum probability, over all possible state sequences, of seeing these states under the respected observation states, where the state at time $t-1$ ends in $i$, given the estimated parameters. So    
 $\delta_t(i)=\underset{S_0,...,S_{t-1}}\max\mathbb{P}(S_0,S_1,...,S_{t-1}=i,O_1,...,O_T\ |\ \theta)$  
 I initialize $\delta_1(i)=\pi_ib_i(O_1)$ and then run over all future timestamps $t=T+1$ until $t=T_{\text{tend}}$, where I calculate dynamically:  
@@ -86,7 +95,7 @@ $\bar{O}_{t}$
 for the predicted observation at time $t$.  
 We initialize:
 
-$\bar{S}_{T+1}=\underset{j}{\mathrm{argmax}}\ \gamma_{T}(j)$
+$\bar{S}_{T+1}=\underset{j}{\mathrm{argmax}}\ \gamma_T(j)$
 
 so we take the most probable state $j$ occuring at time $T$. We also initialize the observation sequence as:
 
