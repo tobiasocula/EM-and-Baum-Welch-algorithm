@@ -46,7 +46,7 @@ After every time we run the training, meaning we exit if the desired error toler
 
 I first assume the model has access to the future observation sequence, and I will test the model on its ability to generalize on estimating the underlying state sequence.  
 For this, I store two structures $\delta,\psi\in\mathbb{R}^{T\times N}$, where $\delta_t(i)$ represents the maximum probability, over all possible state sequences, of seeing these states under the respected observation states, where the state at time $t-1$ ends in $i$, given the estimated parameters. So    
-$$\delta_t(i)=\text{max}\underset{S_0,...,S_{t-1}}\mathbb{P}(S_0,S_1,...,S_{t-1}=i,O_1,...,O_T\ |\ \theta)$$  
+$$\delta_t(i)=\underset{S_0,...,S_{t-1}}\text{max}\mathbb{P}(S_0,S_1,...,S_{t-1}=i,O_1,...,O_T\ |\ \theta)$$  
 I initialize $\delta_1(i)=\pi_ib_i(O_1)$ and then run over all future timestamps $t=T+1$ until $t=T_{\text{tend}}$, where I calculate dynamically:  
 $$\delta_t(i)=\text{max}\underset{j}(\delta_{t-1}(j)a_{i,j})b_i(O_t)$$  
 So we compute the maximum probability of the previous timestamp multiplied by the transition probability, multiplied by the probability that we observed $O_t$.  
