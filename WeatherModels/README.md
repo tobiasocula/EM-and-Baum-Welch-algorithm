@@ -217,4 +217,4 @@ maximum pct correct: 0.812 from attempt 2
 minimum pct correct: 0.366 from attempt 6
 ```
 
-What is interesting is that 
+What is interesting is that using both methods, we can see that pretty much all log-likelyhood values converge to about the same value. However, the error term in the parameter estimations (second plot) is larger in the second attempt, which makes intuitive sense. We can also see the distribution of the fraction of correct state estimations varies more in the second attempt, which again makes sense because we are spreading our guesses more.
