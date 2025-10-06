@@ -164,15 +164,22 @@ pi = np.array([p, 1 - p])
 
 This, expectedly so, worked very well. If we look at the convergence of the log-likelyhood:
 
-![alt text](image-3.png)
+![alt text](image.png)
 
 The error distribution of the parameter guesses looks like:
 
-![alt text](image-4.png)
+![alt text](image-1.png)
 
 And the distribution of the fraction of correct state guesses when having used the viterbi algorithm:
 
-![alt text](image-5.png)
+![alt text](image-2.png)
+
+The best and worst fraction of correct guesses looks like
+
+```
+maximum pct correct: 0.8240000000000001 from attempt 4
+minimum pct correct: 0.62 from attempt 3
+```
 
 I then experimented by using a uniform distribution to make the initial guesses, instead of having to rely on the true parameters.
 
@@ -193,12 +200,21 @@ pi = np.array([p, 1 - p])
 
 This method of parameter initialization is clearly more realistic. If we look at the log-likelyhood distribution in this case, we can see:
 
-![alt text](image.png)
+![alt text](image-3.png)
 
 And the error of the paremeter estimations:
 
-![alt text](image-1.png)
+![alt text](image-4.png)
 
 And the distribution of the fraction of correct state guesses when having used the viterbi algorithm:
 
-![alt text](image-2.png)
+![alt text](image-5.png)
+
+The best and worst fraction of correct guesses looks like
+
+```
+maximum pct correct: 0.812 from attempt 2
+minimum pct correct: 0.366 from attempt 6
+```
+
+What is interesting is that 
