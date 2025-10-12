@@ -139,6 +139,22 @@ $C_{i,j}=D_{\text{sym}}(\Sigma_{i}^{\text{estimated}}\ |\ \Sigma_{i}^{\text{real
 
 and then use the Hungarian algorithm on this cost matrix.
 
+##### Viterbi
+
+Not much changes here, except for the fact that we have to modify the calculation for $\delta$ a bit, since the structure of $B$ is different now.
+
+##### Predictions when future observations are unknown
+
+For this step, the only thing that changes here is the fact that now we use the argmax of the mean temperature and rain values for each state, instead of deriving it using $B$. We also have, of course, that the predicted observation structure is now a $T\times 2$ matrix (rows for temperature and rain):
+
+$\bar{O}_{T,m}=\underset{j}\mathrm{argmax}\ \mu_{j,m}$
+
+We then compute the predicted observation at time $t$ and feature $m$ (here we have $m\in\{0,1\}$):
+
+$\bar{O}_{t,m}=\pi\mu_{:,m}$
+
+where $\mu_{:,m}$ is the m-th column of $\mu$.
+
 ### Experimenting with initial parameter guesses
 
 For both of the intstances of the weather HMM, I wanted to experiment how far or close the estimated parameters come during the training to the actual parameters.
