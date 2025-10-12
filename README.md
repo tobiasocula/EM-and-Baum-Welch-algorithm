@@ -14,4 +14,4 @@ In the folder "WeatherModels" I then explore and implement the Baum-Welch algori
 
 ### The Baum-Welch algorithm for constructing an investment portfolio
 
-I also made an implementation in "baum_welch_on_financials" where I'm using Baum Welch to make a simulated investment portfolio out of synthetic data.
+I also made an implementation in "portfolio" where I'm using Baum Welch to make a simulated investment portfolio out of synthetic data.
